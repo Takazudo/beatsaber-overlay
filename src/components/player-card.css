@@ -1,0 +1,88 @@
+:root {
+  --pc-bg: var(--overlay-bg, rgba(0, 0, 0, 0.75));
+  --pc-fg: var(--overlay-fg, #ffffff);
+  --pc-fg-secondary: var(--overlay-fg, rgba(255, 255, 255, 0.7));
+  --pc-radius: var(--overlay-radius, 12px);
+  --pc-padding: 14px;
+  --pc-avatar-size: 60px;
+  --pc-gap: 12px;
+  --pc-transition: 0.4s ease;
+}
+
+.player-card {
+  background: var(--pc-bg);
+  backdrop-filter: blur(12px);
+  border-radius: var(--pc-radius);
+  padding: var(--pc-padding);
+  color: var(--pc-fg);
+  font-family: var(--font-family, "Inter", sans-serif);
+  display: flex;
+  align-items: center;
+  gap: var(--pc-gap);
+  opacity: var(--overlay-opacity, 0);
+  transform: translateY(-10px);
+  transition:
+    opacity var(--pc-transition),
+    transform var(--pc-transition);
+  pointer-events: none;
+}
+
+.player-card.visible {
+  opacity: var(--overlay-opacity, 1);
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.player-card__avatar {
+  width: var(--pc-avatar-size);
+  height: var(--pc-avatar-size);
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.player-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.player-card__name {
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-card__flag {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.player-card__ranks {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--pc-fg-secondary);
+}
+
+.player-card__world-rank::before {
+  content: "#";
+}
+
+.player-card__country-rank {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.player-card__country-rank::before {
+  content: "#";
+}
+
+.player-card__pp {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffc107;
+}
