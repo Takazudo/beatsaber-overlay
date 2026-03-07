@@ -107,7 +107,7 @@ export class SongCard {
     this.bpmEl.textContent = `${state.bpm} BPM`;
 
     // Time
-    this.timeEl.textContent = `${formatTime(state.elapsed)} / ${formatTime(state.duration)}`;
+    this.timeEl.textContent = `${formatTime(state.currentTime)} / ${formatTime(state.duration)}`;
 
     // Accuracy + Grade
     const grade = getGrade(state.accuracy);
@@ -121,7 +121,7 @@ export class SongCard {
 
     // Misses
     if (showMisses) {
-      this.missesEl.textContent = `${state.misses} miss${state.misses !== 1 ? "es" : ""}`;
+      this.missesEl.textContent = `${state.missCount} miss${state.missCount !== 1 ? "es" : ""}`;
       this.missesEl.style.display = "";
     } else {
       this.missesEl.style.display = "none";
@@ -135,8 +135,8 @@ export class SongCard {
     this.healthFillEl.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
 
     // Speed modifier
-    if (state.speed !== 1.0) {
-      this.speedEl.textContent = `${state.speed.toFixed(1)}x`;
+    if (state.speedModifier !== 1.0) {
+      this.speedEl.textContent = `${state.speedModifier.toFixed(1)}x`;
       this.speedEl.style.display = "";
     } else {
       this.speedEl.style.display = "none";
