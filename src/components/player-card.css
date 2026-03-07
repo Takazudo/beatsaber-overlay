@@ -15,7 +15,8 @@
   border-radius: var(--pc-radius);
   padding: var(--pc-padding);
   color: var(--pc-fg);
-  font-family: var(--font-family, "Inter", sans-serif);
+  font-family: var(--font-family, "Outfit", sans-serif);
+  font-weight: var(--font-weight, 300);
   display: flex;
   align-items: center;
   gap: var(--pc-gap);
@@ -39,6 +40,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  background: #000;
 }
 
 .player-card__info {
@@ -49,7 +51,6 @@
 
 .player-card__name {
   font-size: 16px;
-  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -83,6 +84,5 @@
 
 .player-card__pp {
   font-size: 14px;
-  font-weight: 600;
   color: #ffc107;
 }

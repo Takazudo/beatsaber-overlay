@@ -90,7 +90,15 @@ export class SongCard {
   }
 
   update(state: GameState, showMisses: boolean): void {
-    this.coverEl.src = state.coverUrl;
+    if (state.coverUrl) {
+      this.coverEl.src = state.coverUrl;
+      this.coverEl.style.display = "";
+      this.coverEl.onerror = () => {
+        this.coverEl.style.display = "none";
+      };
+    } else {
+      this.coverEl.style.display = "none";
+    }
     this.titleEl.textContent = state.songName;
     this.subtitleEl.textContent = state.songSubName;
     this.artistEl.textContent = state.songAuthor;

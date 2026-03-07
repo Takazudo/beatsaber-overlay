@@ -10,7 +10,8 @@
 /* Custom Properties */
 :root {
   /* Fonts */
-  --font-family: "Inter", sans-serif;
+  --font-family: "Outfit", sans-serif;
+  --font-weight: 300;
 
   /* Colors */
   --color-text: #ffffff;
@@ -49,6 +50,7 @@
 
 body {
   font-family: var(--font-family);
+  font-weight: var(--font-weight);
   color: var(--color-text);
   background: transparent;
   overflow: hidden;
