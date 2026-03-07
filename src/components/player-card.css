@@ -1,8 +1,8 @@
 :root {
-  --pc-bg: rgba(0, 0, 0, 0.75);
-  --pc-fg: #ffffff;
-  --pc-fg-secondary: rgba(255, 255, 255, 0.7);
-  --pc-radius: 12px;
+  --pc-bg: var(--overlay-bg, rgba(0, 0, 0, 0.75));
+  --pc-fg: var(--overlay-fg, #ffffff);
+  --pc-fg-secondary: var(--overlay-fg, rgba(255, 255, 255, 0.7));
+  --pc-radius: var(--overlay-radius, 12px);
   --pc-padding: 14px;
   --pc-avatar-size: 60px;
   --pc-gap: 12px;
@@ -15,11 +15,11 @@
   border-radius: var(--pc-radius);
   padding: var(--pc-padding);
   color: var(--pc-fg);
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-family, "Inter", sans-serif);
   display: flex;
   align-items: center;
   gap: var(--pc-gap);
-  opacity: 0;
+  opacity: var(--overlay-opacity, 0);
   transform: translateY(-10px);
   transition:
     opacity var(--pc-transition),
@@ -28,7 +28,7 @@
 }
 
 .player-card.visible {
-  opacity: 1;
+  opacity: var(--overlay-opacity, 1);
   transform: translateY(0);
   pointer-events: auto;
 }

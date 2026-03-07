@@ -1,8 +1,8 @@
 :root {
-  --sc-bg: rgba(0, 0, 0, 0.75);
-  --sc-fg: #ffffff;
-  --sc-fg-secondary: rgba(255, 255, 255, 0.7);
-  --sc-radius: 12px;
+  --sc-bg: var(--overlay-bg, rgba(0, 0, 0, 0.75));
+  --sc-fg: var(--overlay-fg, #ffffff);
+  --sc-fg-secondary: var(--overlay-fg, rgba(255, 255, 255, 0.7));
+  --sc-radius: var(--overlay-radius, 12px);
   --sc-padding: 16px;
   --sc-cover-size: 80px;
   --sc-gap: 12px;
@@ -16,10 +16,10 @@
   border-radius: var(--sc-radius);
   padding: var(--sc-padding);
   color: var(--sc-fg);
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-family, "Inter", sans-serif);
   min-width: 320px;
   max-width: 400px;
-  opacity: 0;
+  opacity: var(--overlay-opacity, 0);
   transform: translateY(10px);
   transition:
     opacity var(--sc-transition),
@@ -28,7 +28,7 @@
 }
 
 .song-card.visible {
-  opacity: 1;
+  opacity: var(--overlay-opacity, 1);
   transform: translateY(0);
   pointer-events: auto;
 }

@@ -3,6 +3,7 @@ import { $ } from "../utils/dom";
 import "./player-card.css";
 
 function countryCodeToFlag(code: string): string {
+  if (code.length < 2) return "";
   const upper = code.toUpperCase();
   const offset = 0x1f1e6 - 65; // 'A' = 65
   return String.fromCodePoint(
@@ -67,7 +68,14 @@ export class PlayerCard {
     // Country rank text goes after the flag span inside the element
     // We need to set the rank number after the flag
     const rankText = info.countryRank.toLocaleString("en-US");
-    this.countryRankEl.innerHTML = `<span class="player-card__country-flag">${flag}</span>${rankText}`;
+    this.countryFlagEl.textContent = flag;
+    // Set rank text after the flag span
+    const textNode = this.countryRankEl.childNodes[1];
+    if (textNode) {
+      textNode.textContent = rankText;
+    } else {
+      this.countryRankEl.appendChild(document.createTextNode(rankText));
+    }
 
     this.ppEl.textContent = `${info.pp.toLocaleString("en-US")}pp`;
   }

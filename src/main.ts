@@ -1,6 +1,4 @@
 import "./style.css";
-import "./components/song-card.css";
-import "./components/player-card.css";
 
 import type { GameState } from "./types";
 import { parseParams, applyStyleTweaks } from "./params";
@@ -67,8 +65,8 @@ function main() {
     manager.connect();
   }
 
-  // 6. Fetch ScoreSaber player info if pid is set
-  if (params.pid) {
+  // 6. Fetch ScoreSaber player info if pid is set (skip in mock mode)
+  if (params.pid && !params.mock) {
     fetchPlayerInfo(params.pid).then((info) => {
       if (info) {
         playerCard.update(info);

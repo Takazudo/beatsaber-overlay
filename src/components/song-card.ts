@@ -128,7 +128,7 @@ export class SongCard {
     }
 
     // Health bar
-    const healthPct = Math.max(0, Math.min(100, state.health * 100));
+    const healthPct = Math.max(0, Math.min(100, state.health));
     this.healthFillEl.style.width = `${healthPct}%`;
     // Green when high, red when low
     const hue = healthPct * 1.2; // 0=red, 120=green
