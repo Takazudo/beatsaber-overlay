@@ -1,0 +1,206 @@
+:root {
+  --sc-bg: rgba(0, 0, 0, 0.75);
+  --sc-fg: #ffffff;
+  --sc-fg-secondary: rgba(255, 255, 255, 0.7);
+  --sc-radius: 12px;
+  --sc-padding: 16px;
+  --sc-cover-size: 80px;
+  --sc-gap: 12px;
+  --sc-health-height: 4px;
+  --sc-transition: 0.4s ease;
+}
+
+.song-card {
+  background: var(--sc-bg);
+  backdrop-filter: blur(12px);
+  border-radius: var(--sc-radius);
+  padding: var(--sc-padding);
+  color: var(--sc-fg);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-width: 320px;
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--sc-transition),
+    transform var(--sc-transition);
+  pointer-events: none;
+}
+
+.song-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.song-card__main {
+  display: flex;
+  gap: var(--sc-gap);
+}
+
+.song-card__cover {
+  width: var(--sc-cover-size);
+  height: var(--sc-cover-size);
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.song-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.song-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-card__subtitle {
+  font-size: 12px;
+  color: var(--sc-fg-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-card__artist {
+  font-size: 12px;
+  color: var(--sc-fg-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-card__mapper {
+  font-size: 11px;
+  color: var(--sc-fg-secondary);
+  opacity: 0.8;
+}
+
+.song-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.song-card__difficulty {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.song-card__bsr {
+  font-size: 11px;
+  color: var(--sc-fg-secondary);
+  opacity: 0.8;
+}
+
+.song-card__bpm {
+  font-size: 11px;
+  color: var(--sc-fg-secondary);
+}
+
+.song-card__stats {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.song-card__accuracy {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.song-card__grade {
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.song-card__score {
+  font-size: 14px;
+  color: var(--sc-fg-secondary);
+}
+
+.song-card__combo {
+  font-size: 14px;
+  color: var(--sc-fg-secondary);
+}
+
+.song-card__misses {
+  font-size: 13px;
+  color: #f44336;
+  font-weight: 600;
+}
+
+.song-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 8px;
+}
+
+.song-card__time {
+  font-size: 11px;
+  color: var(--sc-fg-secondary);
+  white-space: nowrap;
+}
+
+.song-card__speed {
+  font-size: 11px;
+  color: #ffc107;
+  font-weight: 600;
+}
+
+.song-card__ranked {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.song-card__ranked-badge {
+  background: #ffc107;
+  color: #000;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.song-card__pp {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+.song-card__health-bar {
+  margin-top: 8px;
+  height: var(--sc-health-height);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.song-card__health-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
