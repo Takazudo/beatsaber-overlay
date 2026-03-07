@@ -1,0 +1,96 @@
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Properties */
+:root {
+  /* Fonts */
+  --font-family: "Inter", sans-serif;
+
+  /* Colors */
+  --color-text: #ffffff;
+  --color-bg: rgba(0, 0, 0, 0.6);
+  --color-accent: #4a90d9;
+
+  /* Difficulty Colors */
+  --color-easy: #008055;
+  --color-normal: #1268a1;
+  --color-hard: #bd5500;
+  --color-expert: #b52a1c;
+  --color-expert-plus: #454088;
+
+  /* Grade Colors */
+  --color-grade-ss: #ffd700;
+  --color-grade-s: #c0c0c0;
+  --color-grade-a: #00cc44;
+  --color-grade-b: #2196f3;
+  --color-grade-c: #ff9800;
+  --color-grade-d: #f44336;
+  --color-grade-e: #9e9e9e;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+
+  /* Border Radius */
+  --radius: 8px;
+
+  /* Transitions */
+  --transition-speed: 0.3s;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--color-text);
+  background: transparent;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+#overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Position Utilities */
+.top-left {
+  position: absolute;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+}
+
+.top-right {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+}
+
+.bottom-left {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  left: var(--spacing-lg);
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+}
+
+/* Smooth transitions for cards */
+#song-card,
+#player-card {
+  transition:
+    opacity var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+}
