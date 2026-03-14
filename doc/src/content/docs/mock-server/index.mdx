@@ -1,0 +1,94 @@
+---
+title: Mock Server
+sidebar_position: 9
+---
+
+# Mock Server
+
+The mock server simulates Beat Saber gameplay data for development and testing. It is activated by the `mock` [URL parameter](../url-params/).
+
+## Activation
+
+```
+https://overlay.example.com/?mock=true
+```
+
+When mock mode is enabled:
+
+- No real WebSocket connections are attempted
+- No external API calls are made (BeatSaver, ScoreSaber)
+- A simulated gameplay loop runs automatically
+
+## Phase Sequence
+
+The mock server cycles through gameplay phases in a continuous loop:
+
+| Phase | Duration | Description |
+|---|---|---|
+| `menu` | 3 seconds | Menu screen, player card visible |
+| `playing` | 30 seconds | Active gameplay simulation |
+| `paused` | 3 seconds | Simulated pause |
+| `playing` | 15 seconds | Resumed gameplay |
+| `finished` | 5 seconds | End-of-song results |
+
+After `finished`, the loop restarts from `menu` with the next song.
+
+## Update Rate
+
+The mock server sends state updates at **100ms intervals** (~10Hz), matching the real adapter update frequency.
+
+## Song Rotation
+
+Three songs rotate through the mock gameplay loop:
+
+1. "Reality Check Through The Skull"
+2. "Crystallized"
+3. "Overkill"
+
+Each loop iteration uses the next song in sequence.
+
+## Mock Player
+
+When mock mode is active, a mock player profile is used instead of calling the ScoreSaber API:
+
+| Field | Value |
+|---|---|
+| Name | MockPlayer |
+| Country | JP |
+| World Rank | 1234 |
+| Country Rank | 56 |
+| PP | 12345.67 |
+
+## Gameplay Simulation
+
+During the `playing` phase, the mock server simulates realistic gameplay:
+
+### Miss Mechanics
+
+- Approximately **2% chance per tick** (every 100ms) of a miss
+- When a miss occurs, the combo resets to 0
+- The miss count increments
+
+### Health
+
+- Health **recovers at 2 points per second** (0.2 per tick)
+- Health **drops on miss** events
+- Health is clamped between 50 and 100
+
+### Score and Combo
+
+- Score increases with each "hit" (non-miss tick)
+- Combo builds continuously until a miss resets it
+- Accuracy gradually adjusts based on hit/miss ratio
+
+### Progress
+
+- `currentTime` increments by 0.1 seconds per tick
+- Time display shows `currentTime / duration`
+
+## Use Cases
+
+- **UI development**: Iterate on overlay styling without running Beat Saber
+- **Testing**: Verify state transitions (menu → playing → paused → finished)
+- **Demo**: Show the overlay to non-gamers without game hardware
+- **CI**: Automated testing with predictable state sequences

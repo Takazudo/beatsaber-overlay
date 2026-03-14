@@ -167,9 +167,7 @@ export class HTTPSiraAdapter {
         ? `data:image/png;base64,${beatmap.songCover}`
         : "";
       this.state.bpm = beatmap.songBPM ?? 0;
-      this.state.duration = beatmap.length
-        ? beatmap.length / 1000
-        : 0;
+      this.state.duration = beatmap.length ? beatmap.length / 1000 : 0;
       this.state.difficulty = parseDifficulty(beatmap.difficulty);
     }
     this.updatePerformance(status.performance);
@@ -181,9 +179,7 @@ export class HTTPSiraAdapter {
     this.state.combo = perf.combo ?? this.state.combo;
     this.state.currentTime = perf.currentSongTime ?? this.state.currentTime;
     this.state.health =
-      perf.batteryEnergy != null
-        ? perf.batteryEnergy * 100
-        : this.state.health;
+      perf.batteryEnergy != null ? perf.batteryEnergy * 100 : this.state.health;
 
     if (perf.currentMaxScore && perf.currentMaxScore > 0) {
       const rawScore = perf.rawScore ?? perf.score ?? 0;

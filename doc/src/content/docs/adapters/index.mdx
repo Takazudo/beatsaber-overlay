@@ -1,0 +1,54 @@
+---
+title: Adapter Overview
+sidebar_position: 3
+---
+
+# Adapter Overview
+
+The overlay supports three Beat Saber WebSocket mods. Each adapter connects to its respective mod, receives raw events, and normalizes them into the shared [GameState](../game-state/) interface.
+
+## Comparison Table
+
+| Feature | BSPlus | HTTPSira | DataPuller |
+|---|---|---|---|
+| **Port** | 2947 | 6557 | 2946 |
+| **WebSocket path** | `/socket` | `/socket` | `/BSDataPuller/{MapData,LiveData}` |
+| **WS connections** | 1 | 1 | 2 |
+| **Provides BSR** | Yes | No | Yes |
+| **Provides PP** | Yes | No | Yes |
+| **Cover format** | Base64 in `coverRaw` | Base64 in `songCover` | Base64 in `coverImage` |
+| **Song hash source** | `level_id` (strip prefix) | `songHash` (direct) | `Hash` (direct) |
+| **Duration unit** | Milliseconds | Milliseconds | Seconds |
+| **Accuracy unit** | Decimal (0-1) | Calculated from scores | Percentage (0-100) |
+| **Health unit** | Decimal (0-1) | Decimal (0-1) or null | Percentage (0-100) |
+| **Time unit** | Milliseconds | Seconds | Seconds |
+| **Speed modifier** | Not provided | Not provided | `ModifiersMultiplier` |
+
+## Key Differences
+
+### Data that requires conversion
+
+Each adapter sends data in different units. The normalization layer handles these conversions:
+
+- **Duration**: BSPlus and HTTPSira send milliseconds (divide by 1000); DataPuller sends seconds directly
+- **Accuracy**: BSPlus sends a decimal 0-1 (multiply by 100); HTTPSira requires calculation from `rawScore/currentMaxScore`; DataPuller sends 0-100 directly
+- **Health**: BSPlus and HTTPSira send a decimal 0-1 (multiply by 100); DataPuller sends 0-100 directly
+- **Current time**: BSPlus sends milliseconds (divide by 1000); HTTPSira and DataPuller send seconds directly
+
+### Missing data
+
+- **HTTPSira** does not provide BSR key, PP, or Star rating. The BSR key is fetched separately via the [BeatSaver API](../apis/beatsaver).
+- **BSPlus** and **HTTPSira** do not provide a speed modifier.
+- Only **DataPuller** provides `ModifiersMultiplier` for the speed modifier field.
+
+### Song hash extraction
+
+- **BSPlus**: Song hash is extracted from `level_id` by stripping the `"custom_level_"` prefix (case-insensitive)
+- **HTTPSira**: `songHash` field is used directly
+- **DataPuller**: `Hash` field is used directly
+
+## Adapter Pages
+
+- [BSPlus (Beat Saber Plus)](./bs-plus) — Single WebSocket on port 2947
+- [HTTPSira (HTTP Status / SiraStatus)](./http-sira) — Single WebSocket on port 6557
+- [DataPuller](./data-puller) — Dual WebSocket on port 2946

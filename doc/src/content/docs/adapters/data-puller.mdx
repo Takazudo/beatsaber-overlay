@@ -1,0 +1,91 @@
+---
+title: DataPuller
+sidebar_position: 3
+---
+
+# DataPuller
+
+DataPuller is unique among the three adapters in that it uses **two separate WebSocket connections** — one for map metadata and one for live gameplay data. Messages are flat JSON objects with no envelope wrapper.
+
+## Connection
+
+| Property | Value |
+|---|---|
+| **MapData URL** | `ws://{ip}:2946/BSDataPuller/MapData` |
+| **LiveData URL** | `ws://{ip}:2946/BSDataPuller/LiveData` |
+| **Port** | 2946 |
+| **Connections** | 2 |
+
+## MapData Fields
+
+Received on the MapData WebSocket when a song starts or changes:
+
+| Wire field | GameState field | Conversion |
+|---|---|---|
+| `SongName` | `songName` | Direct |
+| `SongSubName` | `songSubName` | Direct |
+| `SongAuthor` | `songAuthor` | Direct |
+| `Mapper` | `mapper` | Direct |
+| `BSRKey` | `bsr` | Direct |
+| `Hash` | `songHash` | Direct |
+| `coverImage` | `coverUrl` | Check for `data:` prefix |
+| `Duration` | `duration` | Direct (already in seconds) |
+| `BPM` | `bpm` | Direct |
+| `Difficulty` | `difficulty` | Via `parseDifficulty()` |
+| `PP` | `pp` | Direct |
+| `PP` | `ranked` | `PP > 0` |
+| `ModifiersMultiplier` | `speedModifier` | Direct |
+
+:::tip
+DataPuller is the **only adapter** that provides `ModifiersMultiplier` for the speed modifier. BSPlus and HTTPSira do not send this value.
+:::
+
+### Play State from MapData
+
+DataPuller does not send a single play state field. Instead, the play state is derived from a set of boolean flags:
+
+```typescript
+// Priority order (highest to lowest)
+if (LevelPaused)                       → "paused"
+if (LevelFinished || LevelFailed)      → "finished"
+if (LevelQuit)                         → "menu"  // treated as return to menu
+if (InLevel)                           → "playing"
+else                                   → "menu"
+```
+
+### Cover Image
+
+The `coverImage` field may or may not include a `data:` prefix. The adapter checks and uses it as-is if the prefix is present:
+
+```typescript
+const coverUrl = coverImage.startsWith("data:")
+  ? coverImage
+  : `data:image/png;base64,${coverImage}`;
+```
+
+## LiveData Fields
+
+Received on the LiveData WebSocket at high frequency during gameplay:
+
+| Wire field | GameState field | Conversion |
+|---|---|---|
+| `ScoreWithMultipliers` | `score` | Direct (preferred) |
+| `Score` | `score` | Fallback if `ScoreWithMultipliers` unavailable |
+| `Combo` | `combo` | Direct |
+| `Misses` | `missCount` | Direct |
+| `Accuracy` | `accuracy` | Direct (already 0-100 percentage) |
+| `PlayerHealth` | `health` | Direct (already 0-100 percentage) |
+| `TimeElapsed` | `currentTime` | Direct (already in seconds) |
+
+## Unit Differences
+
+DataPuller uses the most "natural" units of the three adapters:
+
+| Measurement | DataPuller | BSPlus | HTTPSira |
+|---|---|---|---|
+| Duration | Seconds | Milliseconds | Milliseconds |
+| Time | Seconds | Milliseconds | Seconds |
+| Accuracy | 0-100% | 0-1 decimal | Calculated |
+| Health | 0-100% | 0-1 decimal | 0-1 decimal |
+
+This means DataPuller requires the fewest unit conversions during normalization.

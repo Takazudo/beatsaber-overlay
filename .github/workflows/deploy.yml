@@ -19,12 +19,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run build
+          node-version: 22
+          cache: pnpm
+      - name: Install overlay dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build overlay
+        run: pnpm build
+      - name: Install doc dependencies
+        working-directory: doc
+        run: pnpm install --frozen-lockfile
+      - name: Build doc site
+        working-directory: doc
+        run: pnpm build
+      - name: Merge doc into dist
+        run: cp -r doc/dist dist/doc
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

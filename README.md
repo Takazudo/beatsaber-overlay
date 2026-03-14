@@ -189,21 +189,21 @@ Shown on the menu screen (between songs):
 
 ### Prerequisites
 
-- Node.js 20+
-- npm
+- Node.js 22+
+- pnpm (declared via `packageManager` field)
 
 ### Setup
 
 ```bash
 git clone https://github.com/Takazudo/beatsaber-overlay.git
 cd beatsaber-overlay
-npm install
+pnpm install
 ```
 
 ### Dev Server
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open <http://localhost:5173/beatsaber-overlay/?mock=true> to test with mock data.
@@ -211,7 +211,7 @@ Open <http://localhost:5173/beatsaber-overlay/?mock=true> to test with mock data
 ### Build
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Output goes to `dist/`.
@@ -219,7 +219,7 @@ Output goes to `dist/`.
 ### Preview Production Build
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
 ## Tech Stack

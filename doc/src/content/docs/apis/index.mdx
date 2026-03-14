@@ -1,0 +1,34 @@
+---
+title: External APIs
+sidebar_position: 5
+---
+
+# External APIs
+
+The overlay integrates with two external services to enrich the game data received from the WebSocket adapters.
+
+## BeatSaver API
+
+[BeatSaver](./beatsaver) provides:
+
+- **CDN cover image URLs** — replaces the base64 cover images from the mods with faster-loading CDN URLs
+- **BSR keys** — the map identifier used on BeatSaver (e.g., `"25f"`)
+
+This is especially important for HTTPSira, which does not provide BSR keys natively.
+
+## ScoreSaber API
+
+[ScoreSaber](./scoresaber) provides:
+
+- **Player profile data** — name, avatar, country, world rank, country rank, and PP
+
+This data is used by the Player Card component when a player ID is configured.
+
+## API Call Timing
+
+| API | When Called | Frequency |
+|---|---|---|
+| BeatSaver | When `songHash` changes | Once per song |
+| ScoreSaber | On startup (when `pid` param is set) | Once per session |
+
+Neither API is called in mock mode.

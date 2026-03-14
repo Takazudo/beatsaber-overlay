@@ -102,9 +102,7 @@ export class BSPlusAdapter {
         mapper: info.mapper,
         bsr: info.BSRKey,
         songHash,
-        coverUrl: info.coverRaw
-          ? `data:image/png;base64,${info.coverRaw}`
-          : "",
+        coverUrl: info.coverRaw ? `data:image/png;base64,${info.coverRaw}` : "",
         duration: info.duration / 1000,
         bpm: info.BPM,
         difficulty: parseDifficulty(info.difficulty),

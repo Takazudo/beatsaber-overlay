@@ -1,0 +1,88 @@
+<script>
+  /**
+   * Resolve a CSS value to a hex color (#rrggbb).
+   * CSS custom properties return raw values from getComputedStyle (e.g.
+   * "light-dark(#fff, #000)") which mermaid cannot parse. This uses a
+   * temporary element so the browser resolves any CSS function to a
+   * concrete rgb() value, then converts it to hex.
+   */
+  function resolveColor(value: string): string {
+    if (!value) return value;
+    if (/^#[0-9a-fA-F]{3}$/.test(value)) {
+      return "#" + value[1] + value[1] + value[2] + value[2] + value[3] + value[3];
+    }
+    if (/^#[0-9a-fA-F]{6}$/.test(value)) return value;
+    if (/^#[0-9a-fA-F]{8}$/.test(value)) return value.slice(0, 7);
+    if (/^#[0-9a-fA-F]{4}$/.test(value)) {
+      return "#" + value[1] + value[1] + value[2] + value[2] + value[3] + value[3];
+    }
+    const el = document.createElement("div");
+    el.style.display = "none";
+    el.style.color = value;
+    document.body.appendChild(el);
+    let resolved: string;
+    try {
+      resolved = getComputedStyle(el).color;
+    } finally {
+      el.remove();
+    }
+    const m = resolved.match(/(\d+)/g);
+    if (m && m.length >= 3) {
+      return (
+        "#" +
+        m
+          .slice(0, 3)
+          .map((n) => Number(n).toString(16).padStart(2, "0"))
+          .join("")
+      );
+    }
+    return value;
+  }
+
+  async function initMermaid() {
+    const els = document.querySelectorAll<HTMLElement>(
+      "[data-mermaid]:not([data-mermaid-rendered])",
+    );
+    if (els.length === 0) return;
+
+    try {
+      const { default: mermaid } = await import("mermaid");
+      const s = getComputedStyle(document.documentElement);
+      const v = (name: string) =>
+        resolveColor(s.getPropertyValue(name).trim());
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "base",
+        themeVariables: {
+          darkMode: (() => {
+            const bg = v("--zd-bg");
+            const hex = bg.replace("#", "");
+            const r = parseInt(hex.substring(0, 2), 16) / 255;
+            const g = parseInt(hex.substring(2, 4), 16) / 255;
+            const b = parseInt(hex.substring(4, 6), 16) / 255;
+            const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            return Number.isNaN(luminance) ? true : luminance < 0.5;
+          })(),
+          background: "transparent",
+          primaryColor: v("--zd-bg"),
+          primaryTextColor: v("--zd-fg"),
+          primaryBorderColor: v("--zd-8"),
+          lineColor: v("--zd-8"),
+          secondaryColor: v("--zd-0"),
+          tertiaryColor: v("--zd-0"),
+          noteBkgColor: v("--zd-0"),
+          noteTextColor: v("--zd-fg"),
+          noteBorderColor: v("--zd-8"),
+          fontFamily: "inherit",
+        },
+      });
+      await mermaid.run({ nodes: Array.from(els) });
+      els.forEach((el) => el.setAttribute("data-mermaid-rendered", ""));
+    } catch (e) {
+      console.error("[mermaid-init] Failed to render mermaid diagrams:", e);
+    }
+  }
+
+  // astro:page-load fires on initial load and after View Transition navigations
+  document.addEventListener("astro:page-load", () => initMermaid());
+</script>

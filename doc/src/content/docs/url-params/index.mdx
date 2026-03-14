@@ -1,0 +1,109 @@
+---
+title: URL Parameters
+sidebar_position: 8
+---
+
+# URL Parameters
+
+The overlay is configured entirely through URL query parameters. This allows streamers to customize the overlay by editing the browser source URL in OBS.
+
+## Parameter Reference
+
+| Param | Type | Default | Description |
+|---|---|---|---|
+| `ip` | string | `"localhost"` | Game host IP address |
+| `pid` | string | `""` | ScoreSaber player ID |
+| `mock` | boolean | `false` | Enable mock mode for testing |
+| `md` | boolean | `false` | Show miss count and detail info |
+| `scpos` | CardPosition | `"bottom-left"` | Song card position |
+| `pcpos` | CardPosition | `"top-right"` | Player card position |
+| `scsc` | number | `1.0` | Song card scale (0.1-2.0) |
+| `pcsc` | number | `1.0` | Player card scale (0.1-2.0) |
+| `bg` | string | `""` | Background color override |
+| `fg` | string | `""` | Foreground color override |
+| `opacity` | number | `1.0` | Overlay opacity (0-1) |
+| `radius` | number | `null` | Border radius in pixels |
+| `css` | string | `""` | Arbitrary CSS injection |
+
+## Boolean Parsing
+
+Boolean parameters are parsed leniently. The following values are treated as `true`:
+
+- `"true"`
+- `"1"`
+- Empty string (parameter present with no value)
+
+Examples:
+
+```
+?mock=true    → true
+?mock=1       → true
+?mock         → true
+?mock=false   → false
+?mock=0       → false
+```
+
+## Color Parsing
+
+Color parameters (`bg`, `fg`) support both hex and named colors:
+
+- If the value consists entirely of hex digits, a `#` is automatically prepended
+- Otherwise, the value is used as-is (for CSS named colors or other formats)
+
+```
+?bg=1a1a2e     → #1a1a2e
+?bg=ff6600     → #ff6600
+?bg=darkblue   → darkblue
+?bg=rgb(0,0,0) → rgb(0,0,0)
+```
+
+## Style Application
+
+Color and style parameters are mapped to CSS custom properties on the overlay root:
+
+| Parameter | CSS Variable |
+|---|---|
+| `bg` | `--overlay-bg` |
+| `fg` | `--overlay-fg` |
+| `opacity` | `--overlay-opacity` |
+| `radius` | `--overlay-radius` |
+
+## CardPosition Values
+
+Both `scpos` and `pcpos` accept these values:
+
+```typescript
+type CardPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+```
+
+## Example URLs
+
+Basic usage with default settings:
+
+```
+https://overlay.example.com/
+```
+
+Connect to a remote game with ScoreSaber player:
+
+```
+https://overlay.example.com/?ip=192.168.1.100&pid=76561198012345678
+```
+
+Custom styling with repositioned cards:
+
+```
+https://overlay.example.com/?bg=1a1a2e&fg=ffffff&scpos=top-left&pcpos=bottom-right&opacity=0.9&radius=12
+```
+
+Development with mock mode:
+
+```
+https://overlay.example.com/?mock=true&md=true
+```
+
+Full customization:
+
+```
+https://overlay.example.com/?ip=192.168.1.100&pid=76561198012345678&scpos=bottom-right&pcpos=top-left&scsc=1.2&pcsc=0.8&bg=0d1117&fg=c9d1d9&opacity=0.95&radius=8
+```

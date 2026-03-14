@@ -1,0 +1,112 @@
+---
+title: UI Components & Visibility
+sidebar_position: 7
+---
+
+# UI Components & Visibility
+
+The overlay renders two main UI components — the Song Card and the Player Card — with visibility rules tied to the current play state.
+
+## Visibility Rules
+
+| PlayState | Song Card | Player Card |
+|---|---|---|
+| `menu` | Hidden | Shown |
+| `playing` | Shown | Hidden |
+| `paused` | Shown | Hidden |
+| `finished` | Shown | Hidden |
+
+The logic is simple: when a song is active (playing, paused, or finished), the Song Card is visible. When in the menu, only the Player Card is visible.
+
+## Config Constants
+
+### Ports
+
+| Constant | Value | Adapter |
+|---|---|---|
+| `BS_PLUS` | 2947 | BSPlus |
+| `HTTP_SIRA` | 6557 | HTTPSira |
+| `DATA_PULLER` | 2946 | DataPuller |
+
+### Difficulty Colors
+
+Each difficulty level has an assigned color used in the UI:
+
+| Difficulty | Color | Hex |
+|---|---|---|
+| Easy | Green | `#008055` |
+| Normal | Blue | `#1268a1` |
+| Hard | Orange | `#bd5500` |
+| Expert | Red | `#b52a1c` |
+| ExpertPlus | Purple | `#454088` |
+
+### Grade Thresholds
+
+Performance grades are determined by accuracy percentage:
+
+| Grade | Threshold | Color |
+|---|---|---|
+| SS | >= 90% | `#ffd700` (gold) |
+| S | >= 80% | `#c0c0c0` (silver) |
+| A | >= 65% | `#00cc44` (green) |
+| B | >= 50% | `#2196f3` (blue) |
+| C | >= 35% | `#ff9800` (orange) |
+| D | >= 20% | `#f44336` (red) |
+| E | >= 0% | `#9e9e9e` (grey) |
+
+## Song Card
+
+The Song Card displays during gameplay and shows:
+
+- Cover image
+- Song name, sub-name, and author
+- Mapper name
+- Difficulty badge (colored)
+- BPM and duration
+- Current score with grade
+- Accuracy percentage
+- Combo count
+- Miss count (when `md` parameter is enabled)
+- Health bar
+- Elapsed time / total duration
+
+### Positioning
+
+The Song Card position defaults to `bottom-left` and can be changed via the `scpos` [URL parameter](../url-params/).
+
+### Scaling
+
+The Song Card scale defaults to `1.0` and can be adjusted from `0.1` to `2.0` via the `scsc` [URL parameter](../url-params/).
+
+## Player Card
+
+The Player Card is shown in the menu state and displays:
+
+- Player avatar
+- Player name
+- Country flag
+- World rank
+- Country rank
+- Total PP
+
+### Positioning
+
+The Player Card position defaults to `top-right` and can be changed via the `pcpos` [URL parameter](../url-params/).
+
+### Scaling
+
+The Player Card scale defaults to `1.0` and can be adjusted from `0.1` to `2.0` via the `pcsc` [URL parameter](../url-params/).
+
+## Theming
+
+The overlay supports custom theming via URL parameters:
+
+| Parameter | CSS Variable | Description |
+|---|---|---|
+| `bg` | `--overlay-bg` | Background color |
+| `fg` | `--overlay-fg` | Foreground/text color |
+| `opacity` | `--overlay-opacity` | Overall opacity (0-1) |
+| `radius` | `--overlay-radius` | Border radius in pixels |
+| `css` | — | Arbitrary CSS injection |
+
+See [URL Parameters](../url-params/) for the full reference.

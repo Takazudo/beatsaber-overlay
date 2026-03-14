@@ -138,7 +138,8 @@ export class DataPullerAdapter {
   }
 
   private handleLiveData(data: LiveData): void {
-    this.state.score = data.ScoreWithMultipliers ?? data.Score ?? this.state.score;
+    this.state.score =
+      data.ScoreWithMultipliers ?? data.Score ?? this.state.score;
     this.state.combo = data.Combo ?? this.state.combo;
     this.state.missCount = data.Misses ?? this.state.missCount;
     this.state.accuracy = data.Accuracy ?? this.state.accuracy;
