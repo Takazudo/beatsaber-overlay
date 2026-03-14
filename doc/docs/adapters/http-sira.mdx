@@ -1,0 +1,110 @@
+---
+title: HTTPSira (HTTP Status / SiraStatus)
+sidebar_position: 2
+---
+
+# HTTPSira (HTTP Status / SiraStatus)
+
+HTTPSira uses a single WebSocket connection with a nested event/status structure. It provides rich game data but lacks BSR key, PP, and star rating fields.
+
+## Connection
+
+| Property | Value |
+|---|---|
+| **URL** | `ws://{ip}:6557/socket` |
+| **Port** | 6557 |
+| **Connections** | 1 |
+
+## Envelope Format
+
+Messages contain an `event` field and a nested `status` object with `beatmap` and `performance` sub-objects:
+
+```json
+{
+  "event": "songStart",
+  "status": {
+    "beatmap": { ... },
+    "performance": { ... }
+  }
+}
+```
+
+## Events
+
+| Event | Description |
+|---|---|
+| `hello` | Connection acknowledgment |
+| `songStart` | Map begins playing |
+| `scoreChanged` | Score updated during gameplay |
+| `noteMissed` | A note was missed |
+| `pause` | Game paused |
+| `resume` | Game resumed |
+| `finished` | Map completed |
+| `menu` | Returned to menu |
+
+## Beatmap Fields
+
+These fields appear in `status.beatmap`:
+
+| Wire field | GameState field | Conversion |
+|---|---|---|
+| `songName` | `songName` | Direct |
+| `songSubName` | `songSubName` | Direct |
+| `songAuthorName` | `songAuthor` | Direct |
+| `levelAuthorName` | `mapper` | Direct |
+| `songHash` | `songHash` | Direct (no prefix stripping needed) |
+| `songCover` | `coverUrl` | Base64 data URI |
+| `songBPM` | `bpm` | Direct |
+| `length` | `duration` | Divide by 1000 (ms to seconds) |
+| `difficulty` | `difficulty` | Via `parseDifficulty()` |
+
+:::warning
+HTTPSira does **not** provide `BSRKey`, `PP`, or `Star` fields. The BSR key must be fetched separately via the [BeatSaver API](../apis/beatsaver).
+:::
+
+## Performance Fields
+
+These fields appear in `status.performance`:
+
+| Wire field | GameState field | Conversion |
+|---|---|---|
+| `score` | `score` | Direct |
+| `rawScore` | — | Used for accuracy calculation |
+| `currentMaxScore` | — | Used for accuracy calculation |
+| `combo` | `combo` | Direct |
+| `passedNotes` | — | Used for miss count calculation |
+| `hitNotes` | — | Used for miss count calculation |
+| `currentSongTime` | `currentTime` | Direct (already in seconds) |
+| `batteryEnergy` | `health` | Multiply by 100 (can be `null`) |
+
+## Calculated Fields
+
+### Accuracy
+
+Accuracy is calculated from raw score and max score:
+
+```typescript
+const accuracy = (rawScore ?? score) / currentMaxScore * 100;
+```
+
+If `rawScore` is available, it is preferred over `score` (which may include multipliers).
+
+### Miss Count
+
+Miss count is derived from the difference between passed and hit notes:
+
+```typescript
+const missCount = passedNotes - hitNotes;
+```
+
+### Health
+
+The `batteryEnergy` field uses decimal 0-1 scale and can be `null` (when not in battery mode):
+
+```typescript
+const health = batteryEnergy != null ? batteryEnergy * 100 : 50;
+```
+
+## Song Hash
+
+Unlike BSPlus, HTTPSira provides the `songHash` field directly without any prefix. No stripping is needed.

@@ -1,0 +1,65 @@
+---
+title: Cover Image Lifecycle
+sidebar_position: 6
+---
+
+# Cover Image Lifecycle
+
+The cover image goes through a three-stage pipeline from initial display to final optimization.
+
+## Pipeline Stages
+
+### Stage 1: Base64 from Mod (Immediate)
+
+When a song starts, the WebSocket adapter sends a base64-encoded cover image directly in the event payload. This is displayed immediately so the user sees a cover image with zero additional latency.
+
+Each adapter provides base64 data in a different field:
+
+| Adapter | Field | Format |
+|---|---|---|
+| BSPlus | `coverRaw` | Raw base64 (needs `data:image/png;base64,` prefix) |
+| HTTPSira | `songCover` | Base64 data URI |
+| DataPuller | `coverImage` | May or may not have `data:` prefix |
+
+### Stage 2: BeatSaver CDN Override (Async)
+
+After the base64 image is displayed, the overlay calls the [BeatSaver API](../apis/beatsaver) with the song hash. When the response arrives, the CDN cover URL (`data.versions[0].coverURL`) replaces the base64 data URI.
+
+Benefits of the CDN URL:
+
+- Smaller payload (URL vs. base64 blob)
+- Browser caching across sessions
+- Faster rendering on subsequent loads
+
+### Stage 3: Dedup in SongCard (10Hz Protection)
+
+The adapter sends state updates at approximately 10Hz (every 100ms). The SongCard component prevents redundant image source assignments by comparing the new `coverUrl` with the current one:
+
+```typescript
+// Skip if the cover URL hasn't changed
+if (newCoverUrl === currentCoverUrl) return;
+```
+
+Without this dedup, the browser would re-decode the base64 string or re-fetch the CDN URL 10 times per second, causing unnecessary CPU/network usage.
+
+## Full Timeline
+
+```
+1. Song starts
+   └─ Adapter sends base64 cover → displayed immediately
+
+2. BeatSaver API responds (async)
+   └─ CDN URL replaces base64 in state
+
+3. Subsequent 10Hz updates
+   └─ SongCard skips redundant src assignment
+
+4. Song ends (menu)
+   └─ State resets → coverUrl = "" → image element src removed
+```
+
+## Edge Cases
+
+- **No cover available**: If the adapter sends an empty cover and BeatSaver has no data, `coverUrl` remains `""` and no image is displayed.
+- **BeatSaver API failure**: The base64 cover from Stage 1 continues to be used. There is no retry logic.
+- **Song hash missing**: If `songHash` is empty, the BeatSaver API is not called. The base64 cover from the adapter is the only source.

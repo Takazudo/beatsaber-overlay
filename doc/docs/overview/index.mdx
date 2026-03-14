@@ -1,0 +1,53 @@
+---
+title: Project Overview
+sidebar_position: 1
+---
+
+# Project Overview
+
+Beat Saber Overlay is a browser-based stream overlay that displays real-time game data from Beat Saber. It connects to the game via WebSocket-based mods and renders song information, player scores, and performance metrics as a transparent overlay suitable for OBS or other streaming software.
+
+## How It Works
+
+The overlay operates through a three-layer pipeline:
+
+1. **WebSocket adapters** receive raw game data from one of three supported Beat Saber mods (BSPlus, HTTPSira, DataPuller)
+2. **Normalization** transforms each mod's unique wire format into a unified `GameState` interface
+3. **UI rendering** displays the normalized state as positioned, styled cards on a transparent background
+
+## Supported Mods
+
+The overlay supports three Beat Saber WebSocket mods, each with a different protocol:
+
+| Mod | Port | WebSocket Connections |
+|---|---|---|
+| **BSPlus** (Beat Saber Plus) | 2947 | 1 |
+| **HTTPSira** (HTTP Status / SiraStatus) | 6557 | 1 |
+| **DataPuller** | 2946 | 2 |
+
+The connection manager tries each adapter in order (BSPlus, HTTPSira, DataPuller) and falls back to the next on failure. See [Connection Manager](../connection/) for details.
+
+## External Integrations
+
+- **BeatSaver API** — fetches CDN cover images and BSR keys by song hash
+- **ScoreSaber API** — fetches player profile data (rank, country, PP) by player ID
+
+## Key Features
+
+- Real-time score, combo, accuracy, and health display
+- Song metadata with cover art (base64 from mod, upgraded to CDN)
+- Player card with ScoreSaber rank information
+- Configurable positioning, scaling, and theming via URL parameters
+- Built-in mock server for development and testing
+- Automatic reconnection with exponential backoff
+
+## Documentation Structure
+
+- **[Game State](../game-state/)** — the normalized `GameState` interface and related types
+- **[Adapters](../adapters/)** — protocol specs for each supported mod
+- **[Connection](../connection/)** — connection manager and fallback logic
+- **[External APIs](../apis/)** — BeatSaver and ScoreSaber integration
+- **[Cover Image](../cover-image/)** — the three-stage cover image pipeline
+- **[UI](../ui/)** — component visibility rules and config constants
+- **[URL Parameters](../url-params/)** — query parameter reference
+- **[Mock Server](../mock-server/)** — mock server behavior for development

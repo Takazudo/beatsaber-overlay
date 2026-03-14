@@ -1,0 +1,113 @@
+---
+title: GameState Interface
+sidebar_position: 2
+---
+
+# GameState Interface
+
+All three adapters normalize their respective wire formats into a single `GameState` interface. This is the central data structure that drives the entire overlay UI.
+
+## Fields
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `songName` | `string` | `""` | Primary song title |
+| `songSubName` | `string` | `""` | Subtitle (remix, version info) |
+| `songAuthor` | `string` | `""` | Song artist name |
+| `mapper` | `string` | `""` | Level mapper/charter name |
+| `coverUrl` | `string` | `""` | Cover image URL (base64 data URI or HTTPS CDN) |
+| `songHash` | `string` | `""` | SHA-1 hash of the custom level |
+| `bsr` | `string` | `""` | BeatSaver map key (e.g. `"25f"`) |
+| `difficulty` | `Difficulty` | `"Expert"` | One of the five difficulty levels |
+| `bpm` | `number` | `0` | Beats per minute |
+| `duration` | `number` | `0` | Song duration in seconds |
+| `currentTime` | `number` | `0` | Current playback position in seconds |
+| `score` | `number` | `0` | Current score |
+| `combo` | `number` | `0` | Current combo count |
+| `missCount` | `number` | `0` | Total missed notes |
+| `accuracy` | `number` | `100` | Accuracy percentage (0-100) |
+| `health` | `number` | `50` | Player health percentage (0-100) |
+| `speedModifier` | `number` | `1` | Speed multiplier from game modifiers |
+| `playState` | `PlayState` | `"menu"` | Current game phase |
+| `ranked` | `boolean` | `false` | Whether the map is ranked |
+| `pp` | `number` | `0` | Performance points value |
+
+## Related Types
+
+### Difficulty
+
+```typescript
+type Difficulty = "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus";
+```
+
+### PlayState
+
+```typescript
+type PlayState = "menu" | "playing" | "paused" | "finished";
+```
+
+### CardPosition
+
+Used for positioning UI cards on the overlay:
+
+```typescript
+type CardPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+```
+
+### PlayerInfo (ScoreSaber)
+
+Fetched from the ScoreSaber API when a player ID is provided:
+
+```typescript
+interface PlayerInfo {
+  name: string;
+  avatar: string;
+  country: string;
+  worldRank: number;
+  countryRank: number;
+  pp: number;
+}
+```
+
+## DEFAULT_STATE
+
+When the game returns to the menu or on initial load, the state resets to these defaults:
+
+```typescript
+const DEFAULT_STATE: GameState = {
+  songName: "",
+  songSubName: "",
+  songAuthor: "",
+  mapper: "",
+  coverUrl: "",
+  songHash: "",
+  bsr: "",
+  difficulty: "Expert",
+  bpm: 0,
+  duration: 0,
+  currentTime: 0,
+  score: 0,
+  combo: 0,
+  missCount: 0,
+  accuracy: 100,
+  health: 50,
+  speedModifier: 1,
+  playState: "menu",
+  ranked: false,
+  pp: 0,
+};
+```
+
+## parseDifficulty
+
+The `parseDifficulty` utility normalizes raw difficulty strings from the various adapter protocols into a standard `Difficulty` value.
+
+- Handles case-insensitive matching
+- Falls back to `"Expert"` for `null`, `undefined`, or unrecognized values
+
+```typescript
+parseDifficulty("expertplus");  // "ExpertPlus"
+parseDifficulty("HARD");        // "Hard"
+parseDifficulty(null);          // "Expert"
+parseDifficulty("unknown");     // "Expert"
+```
