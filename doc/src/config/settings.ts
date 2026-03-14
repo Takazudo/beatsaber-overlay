@@ -11,7 +11,12 @@ import type {
 
 export const settings = {
   colorScheme: "Default Dark",
-  colorMode: false as ColorModeConfig | false,
+  colorMode: {
+    defaultMode: "dark",
+    lightScheme: "Default Light",
+    darkScheme: "Default Dark",
+    respectPrefersColorScheme: true,
+  } as ColorModeConfig | false,
   siteName: "Beat Saber Overlay Spec",
   siteDescription: "Internal specification for the Beat Saber stream overlay" as string,
   base: "/beatsaber-overlay/doc/",
