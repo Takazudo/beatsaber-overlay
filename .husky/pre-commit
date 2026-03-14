@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Format staged .md/.mdx files with mdx-formatter
+MD_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.md' '*.mdx')
+if [ -n "$MD_FILES" ]; then
+  echo "$MD_FILES" | xargs npx mdx-formatter --write
+  echo "$MD_FILES" | xargs git add
+fi
+
+# Format staged .ts/.css/.html files with prettier
+CODE_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.ts' '*.css' '*.html')
+if [ -n "$CODE_FILES" ]; then
+  echo "$CODE_FILES" | xargs npx prettier --write
+  echo "$CODE_FILES" | xargs git add
+fi

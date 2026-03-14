@@ -1,13 +1,26 @@
 {
   "name": "beatsaber-overlay",
+  "description": "Beat Saber stream overlay for OBS",
+  "version": "0.0.0",
+  "license": "MIT",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write 'src/**/*.{ts,css,html}'",
+    "format:check": "prettier --check 'src/**/*.{ts,css,html}'",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@takazudo/mdx-formatter": "^0.4.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.1",
     "typescript": "^5.7.3",
     "vite": "^6.2.0"
   }

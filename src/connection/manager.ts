@@ -89,9 +89,7 @@ export class ConnectionManager {
     });
   }
 
-  private getPrimarySocket(
-    adapter: Adapter,
-  ): WebSocket | null {
+  private getPrimarySocket(adapter: Adapter): WebSocket | null {
     if (adapter instanceof BSPlusAdapter) return adapter.socket;
     if (adapter instanceof HTTPSiraAdapter) return adapter.socket;
     if (adapter instanceof DataPullerAdapter) return adapter.mapSocket;
