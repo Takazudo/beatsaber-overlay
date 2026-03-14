@@ -22,3 +22,9 @@ jobs:
         run: pnpm build
       - name: Format check
         run: npx prettier --check 'src/**/*.{ts,css,html}'
+      - name: Install doc dependencies
+        working-directory: doc
+        run: pnpm install --frozen-lockfile
+      - name: Build doc site
+        working-directory: doc
+        run: pnpm build
