@@ -4,3 +4,8 @@ worktrees/
 __inbox/
 .env
 *.local
+
+# Doc site
+doc/node_modules/
+doc/build/
+doc/.docusaurus/

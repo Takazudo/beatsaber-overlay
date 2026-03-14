@@ -1,0 +1,78 @@
+---
+title: Connection Manager
+sidebar_position: 4
+---
+
+# Connection Manager
+
+The connection manager handles WebSocket connectivity to the Beat Saber game. It implements a fixed-order fallback chain across the three supported adapters and manages reconnection with exponential backoff.
+
+## Fallback Chain
+
+The adapters are tried in a fixed order:
+
+```
+BSPlus (port 2947) → HTTPSira (port 6557) → DataPuller (port 2946)
+```
+
+The manager attempts to connect to each adapter in sequence. If a connection fails or drops, it moves to the next adapter in the chain.
+
+## Primary Socket
+
+Each adapter exposes a primary socket that the connection manager monitors:
+
+| Adapter | Primary Socket |
+|---|---|
+| **BSPlus** | `adapter.socket` |
+| **HTTPSira** | `adapter.socket` |
+| **DataPuller** | `adapter.mapSocket` |
+
+For DataPuller, the MapData socket is considered the primary connection since it carries the map metadata events that signal song transitions.
+
+## Reconnection Strategy
+
+When all three adapters fail to connect, the manager enters an exponential backoff loop:
+
+```
+Delay = min(1s × 2^n, 10s)
+```
+
+| Attempt | Delay |
+|---|---|
+| 1 | 1 second |
+| 2 | 2 seconds |
+| 3 | 4 seconds |
+| 4 | 8 seconds |
+| 5+ | 10 seconds (capped) |
+
+The backoff resets when a successful connection is established.
+
+## Connection Lifecycle
+
+```
+1. Try BSPlus
+   ├─ Success → Use BSPlus adapter
+   └─ Fail → Try HTTPSira
+              ├─ Success → Use HTTPSira adapter
+              └─ Fail → Try DataPuller
+                         ├─ Success → Use DataPuller adapter
+                         └─ Fail → Wait (backoff) → Restart from BSPlus
+```
+
+:::note
+The connection manager only maintains one active adapter at a time. When a new adapter connects successfully, any previous connection is closed.
+:::
+
+## Error Handling
+
+- **Connection refused**: The mod is not running or is on a different port. The manager moves to the next adapter.
+- **Connection dropped**: The WebSocket closes unexpectedly. The manager restarts the fallback chain.
+- **All adapters fail**: Exponential backoff kicks in, retrying the full chain after each delay.
+
+## IP Configuration
+
+By default, the manager connects to `localhost`. The target IP can be changed via the `ip` [URL parameter](../url-params/), enabling the overlay to connect to a Beat Saber instance on a different machine on the network.
+
+```
+https://overlay.example.com/?ip=192.168.1.100
+```

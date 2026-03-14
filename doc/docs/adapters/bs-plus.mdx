@@ -1,0 +1,133 @@
+---
+title: BSPlus (Beat Saber Plus)
+sidebar_position: 1
+---
+
+# BSPlus (Beat Saber Plus)
+
+BSPlus uses a single WebSocket connection with an envelope-based protocol. Events are distinguished by `_type` and `_event` fields.
+
+## Connection
+
+| Property | Value |
+|---|---|
+| **URL** | `ws://{ip}:2947/socket` |
+| **Port** | 2947 |
+| **Connections** | 1 |
+
+## Envelope Format
+
+All messages use a JSON envelope with either a `_type` or `_event` field to identify the message type:
+
+```json
+{ "_type": "handshake", ... }
+{ "_event": "mapInfo", ... }
+{ "_event": "score", ... }
+```
+
+## Events
+
+### handshake
+
+Sent on connection. Contains protocol and game version.
+
+```json
+{
+  "_type": "handshake",
+  "protocolVersion": 1,
+  "gameVersion": "1.29.1"
+}
+```
+
+### mapInfo
+
+Sent when a new map is selected. Carries all map metadata.
+
+**Field mapping:**
+
+| Wire field | GameState field | Conversion |
+|---|---|---|
+| `name` | `songName` | Direct |
+| `sub_name` | `songSubName` | Direct |
+| `artist` | `songAuthor` | Direct |
+| `mapper` | `mapper` | Direct |
+| `BSRKey` | `bsr` | Direct |
+| `level_id` | `songHash` | Strip `"custom_level_"` prefix (case-insensitive) |
+| `coverRaw` | `coverUrl` | Prepend `"data:image/png;base64,"` |
+| `duration` | `duration` | Divide by 1000 (ms to seconds) |
+| `BPM` | `bpm` | Direct |
+| `difficulty` | `difficulty` | Via `parseDifficulty()` |
+| `PP` | `pp` | Direct |
+| `PP` | `ranked` | `PP > 0` |
+
+:::note
+The `characteristic` and `Star` fields are present in the wire format but are not used by the overlay.
+:::
+
+### score
+
+Sent during gameplay at high frequency (~10Hz). Contains real-time performance data.
+
+**Field mapping:**
+
+| Wire field | GameState field | Conversion |
+|---|---|---|
+| `time` | `currentTime` | Divide by 1000 (ms to seconds) |
+| `score` | `score` | Direct |
+| `accuracy` | `accuracy` | Multiply by 100 (decimal 0-1 to percentage) |
+| `combo` | `combo` | Direct |
+| `missCount` | `missCount` | Direct |
+| `currentHealth` | `health` | Multiply by 100 (decimal 0-1 to percentage) |
+
+### gameState
+
+Sent when the game phase changes. The value is one of: `Menu`, `Playing`, `Paused`, `Finished`.
+
+When the state transitions to `"Menu"`, the overlay resets the entire state to `DEFAULT_STATE`.
+
+```json
+{
+  "_event": "gameState",
+  "gameStateChanged": "Playing"
+}
+```
+
+### pause
+
+Sent when the player pauses. Contains the pause time in milliseconds.
+
+```json
+{
+  "_event": "pause",
+  "pauseTime": 45200
+}
+```
+
+### resume
+
+Sent when the player resumes from pause. Contains the resume time in milliseconds.
+
+```json
+{
+  "_event": "resume",
+  "resumeTime": 48500
+}
+```
+
+## Song Hash Extraction
+
+The `level_id` field uses the format `custom_level_<HASH>`. The adapter strips the prefix using a case-insensitive match:
+
+```typescript
+const hash = level_id.replace(/^custom_level_/i, "");
+```
+
+## Cover Image
+
+BSPlus sends raw base64 PNG data in the `coverRaw` field. The adapter prepends the data URI prefix:
+
+```typescript
+const coverUrl = `data:image/png;base64,${coverRaw}`;
+```
+
+This base64 URL is later replaced by a CDN URL from the [BeatSaver API](../apis/beatsaver) when available.

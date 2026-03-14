@@ -1,0 +1,63 @@
+---
+title: ScoreSaber API
+sidebar_position: 2
+---
+
+# ScoreSaber API
+
+The ScoreSaber API is used to fetch player profile information for the Player Card component.
+
+## Endpoint
+
+```
+GET https://scoresaber.com/api/player/{playerId}/basic
+```
+
+## When It's Called
+
+The API is called **once on startup** when:
+
+1. The `pid` URL parameter is set to a valid ScoreSaber player ID
+2. Mock mode is **not** enabled
+
+```
+https://overlay.example.com/?pid=76561198012345678
+```
+
+## Response
+
+The overlay extracts these fields into a `PlayerInfo` object:
+
+```typescript
+interface PlayerInfo {
+  name: string;       // Player display name
+  avatar: string;     // Avatar image URL
+  country: string;    // Country code (e.g., "JP", "US")
+  worldRank: number;  // Global leaderboard rank
+  countryRank: number; // Country leaderboard rank
+  pp: number;         // Total performance points
+}
+```
+
+## Player Card Display
+
+The `PlayerInfo` data is displayed in the Player Card component, which shows:
+
+- Player name and avatar
+- Country flag
+- World rank and country rank
+- Total PP
+
+The Player Card is visible during the `menu` play state and hidden during gameplay. See [UI Visibility Rules](../ui/) for details.
+
+## Mock Mode
+
+When mock mode is enabled (`?mock=true`), the ScoreSaber API is not called. Instead, a mock player is used:
+
+| Field | Mock Value |
+|---|---|
+| name | MockPlayer |
+| country | JP |
+| worldRank | 1234 |
+| countryRank | 56 |
+| pp | 12345.67 |

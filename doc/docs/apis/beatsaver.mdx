@@ -1,0 +1,50 @@
+---
+title: BeatSaver API
+sidebar_position: 1
+---
+
+# BeatSaver API
+
+The BeatSaver API is used to fetch CDN cover image URLs and BSR map keys for custom levels.
+
+## Endpoint
+
+```
+GET https://api.beatsaver.com/maps/hash/{songHash}
+```
+
+## When It's Called
+
+The API is called whenever the `songHash` field in `GameState` changes — typically when a new song starts. This happens once per song, not on every state update.
+
+## Response
+
+The response is a JSON object. The overlay extracts two fields:
+
+```typescript
+{
+  bsr: data.id,                         // BeatSaver map key (e.g., "25f")
+  coverUrl: data.versions[0].coverURL,  // CDN cover image URL
+}
+```
+
+## Caching Behavior
+
+Once fetched, both the `bsr` and `coverUrl` values are cached and applied to every subsequent `GameState` update for that song. This means:
+
+1. The cover URL from the adapter (base64) is replaced with the CDN URL
+2. The BSR key is available even for adapters that don't provide it natively (like HTTPSira)
+3. No duplicate API calls are made for the same song hash
+
+## Cover Image Upgrade
+
+The primary purpose of this API call is to upgrade the cover image from a base64 data URI to a CDN URL. See [Cover Image Lifecycle](../cover-image/) for the full pipeline.
+
+```
+Base64 from mod  →  BeatSaver API response  →  CDN URL replaces base64
+(immediate)         (async)                     (applied to state)
+```
+
+## HTTPSira BSR Fallback
+
+Since HTTPSira does not provide the BSR key natively, the BeatSaver API serves as the sole source of BSR data when using that adapter. The `data.id` field from the API response is used to populate `GameState.bsr`.
