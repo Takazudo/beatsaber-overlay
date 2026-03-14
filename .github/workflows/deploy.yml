@@ -24,8 +24,18 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Install overlay dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build overlay
+        run: pnpm build
+      - name: Install doc dependencies
+        working-directory: doc
+        run: pnpm install --frozen-lockfile
+      - name: Build doc site
+        working-directory: doc
+        run: pnpm build
+      - name: Merge doc into dist
+        run: cp -r doc/dist dist/doc
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
