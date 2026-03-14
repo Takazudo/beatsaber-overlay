@@ -1,6 +1,13 @@
 const API_BASE = "https://api.beatsaver.com";
 
-export async function fetchBsrByHash(hash: string): Promise<string | null> {
+export interface BeatSaverMapInfo {
+  bsr: string;
+  coverUrl: string;
+}
+
+export async function fetchMapByHash(
+  hash: string,
+): Promise<BeatSaverMapInfo | null> {
   try {
     const res = await fetch(`${API_BASE}/maps/hash/${hash}`);
     if (!res.ok) {
@@ -8,7 +15,11 @@ export async function fetchBsrByHash(hash: string): Promise<string | null> {
       return null;
     }
     const data = await res.json();
-    return data.id ?? null;
+    const coverUrl = data.versions?.[0]?.coverURL ?? "";
+    return {
+      bsr: data.id ?? "",
+      coverUrl,
+    };
   } catch (err) {
     console.warn("BeatSaver API request failed:", err);
     return null;

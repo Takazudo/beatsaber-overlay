@@ -211,6 +211,7 @@ export class MockServer {
       songAuthor: song.songAuthor,
       mapper: song.mapper,
       coverUrl: song.coverUrl,
+      songHash: "",
       bsr: song.bsr,
       difficulty: song.difficulty,
       bpm: song.bpm,

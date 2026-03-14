@@ -12,6 +12,7 @@ export interface GameState {
   songAuthor: string;
   mapper: string;
   coverUrl: string;
+  songHash: string;
   bsr: string;
   difficulty: Difficulty;
   bpm: number;

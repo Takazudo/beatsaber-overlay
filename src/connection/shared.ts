@@ -6,6 +6,7 @@ export const DEFAULT_STATE: GameState = {
   songAuthor: "",
   mapper: "",
   coverUrl: "",
+  songHash: "",
   bsr: "",
   difficulty: "Expert",
   bpm: 0,

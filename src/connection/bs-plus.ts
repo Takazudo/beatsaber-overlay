@@ -10,6 +10,7 @@ interface BSPlusMapInfo {
   mapper: string;
   BSRKey: string;
   coverRaw: string;
+  songHash: string;
   duration: number;
   BPM: number;
   difficulty: string;
@@ -97,6 +98,7 @@ export class BSPlusAdapter {
         songAuthor: info.song_author,
         mapper: info.mapper,
         bsr: info.BSRKey,
+        songHash: info.songHash ?? "",
         coverUrl: info.coverRaw
           ? `data:image/png;base64,${info.coverRaw}`
           : "",

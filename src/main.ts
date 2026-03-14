@@ -7,6 +7,7 @@ import { ConnectionManager } from "./connection/manager";
 import { SongCard } from "./components/song-card";
 import { PlayerCard } from "./components/player-card";
 import { fetchPlayerInfo } from "./api/scoresaber";
+import { fetchMapByHash } from "./api/beatsaver";
 
 function main() {
   // 1. Parse URL params
@@ -37,6 +38,8 @@ function main() {
   }
 
   // 4. State update handler
+  let lastSongHash = "";
+
   function onGameStateUpdate(state: GameState) {
     songCard.update(state, params.md);
 
@@ -49,6 +52,22 @@ function main() {
     } else if (state.playState === "finished") {
       songCard.show();
       playerCard.hide();
+    }
+
+    // Fetch cover + BSR from BeatSaver when a new song starts
+    if (state.songHash && state.songHash !== lastSongHash) {
+      lastSongHash = state.songHash;
+      fetchMapByHash(state.songHash).then((mapInfo) => {
+        if (mapInfo) {
+          if (mapInfo.coverUrl) {
+            state.coverUrl = mapInfo.coverUrl;
+          }
+          if (mapInfo.bsr && !state.bsr) {
+            state.bsr = mapInfo.bsr;
+          }
+          songCard.update(state, params.md);
+        }
+      });
     }
   }
 

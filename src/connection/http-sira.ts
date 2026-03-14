@@ -162,6 +162,7 @@ export class HTTPSiraAdapter {
       this.state.songSubName = beatmap.songSubName ?? "";
       this.state.songAuthor = beatmap.songAuthorName ?? "";
       this.state.mapper = beatmap.levelAuthorName ?? "";
+      this.state.songHash = beatmap.songHash ?? "";
       this.state.coverUrl = beatmap.songCover
         ? `data:image/png;base64,${beatmap.songCover}`
         : "";

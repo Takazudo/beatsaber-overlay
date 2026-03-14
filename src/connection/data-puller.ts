@@ -108,6 +108,7 @@ export class DataPullerAdapter {
     this.state.songAuthor = data.SongAuthor ?? this.state.songAuthor;
     this.state.mapper = data.Mapper ?? this.state.mapper;
     this.state.bsr = data.BSRKey ?? this.state.bsr;
+    this.state.songHash = data.Hash ?? this.state.songHash;
     this.state.duration = data.Duration ?? this.state.duration;
     this.state.bpm = data.BPM ?? this.state.bpm;
     this.state.difficulty = parseDifficulty(data.Difficulty);
