@@ -17,11 +17,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Type check
-        run: npx tsc --noEmit
+        run: pnpm exec tsc --noEmit
       - name: Build
         run: pnpm build
       - name: Format check
-        run: npx prettier --check 'src/**/*.{ts,css,html}'
+        run: pnpm exec prettier --check 'src/**/*.{ts,css,html}'
       - name: Install doc dependencies
         working-directory: doc
         run: pnpm install --frozen-lockfile

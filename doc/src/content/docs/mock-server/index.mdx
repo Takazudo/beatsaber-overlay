@@ -73,7 +73,7 @@ During the `playing` phase, the mock server simulates realistic gameplay:
 
 - Health **recovers at 2 points per second** (0.2 per tick)
 - Health **drops on miss** events
-- Health is clamped between 0 and 100
+- Health is clamped between 50 and 100
 
 ### Score and Combo
 
@@ -84,7 +84,7 @@ During the `playing` phase, the mock server simulates realistic gameplay:
 ### Progress
 
 - `currentTime` increments by 0.1 seconds per tick
-- Progress bar fills as `currentTime / duration`
+- Time display shows `currentTime / duration`
 
 ## Use Cases
 

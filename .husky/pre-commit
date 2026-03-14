@@ -3,13 +3,13 @@
 # Format staged .md/.mdx files with mdx-formatter
 MD_FILES=$(git diff --cached --name-only --diff-filter=ACM -z -- '*.md' '*.mdx' | tr '\0' '\n')
 if [ -n "$MD_FILES" ]; then
-  echo "$MD_FILES" | tr '\n' '\0' | xargs -0 npx mdx-formatter --write
+  echo "$MD_FILES" | tr '\n' '\0' | xargs -0 pnpm exec mdx-formatter --write
   echo "$MD_FILES" | tr '\n' '\0' | xargs -0 git add
 fi
 
 # Format staged .ts/.css/.html files with prettier
 CODE_FILES=$(git diff --cached --name-only --diff-filter=ACM -z -- '*.ts' '*.css' '*.html' | tr '\0' '\n')
 if [ -n "$CODE_FILES" ]; then
-  echo "$CODE_FILES" | tr '\n' '\0' | xargs -0 npx prettier --write
+  echo "$CODE_FILES" | tr '\n' '\0' | xargs -0 pnpm exec prettier --write
   echo "$CODE_FILES" | tr '\n' '\0' | xargs -0 git add
 fi
