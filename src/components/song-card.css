@@ -45,7 +45,7 @@
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  background: #000;
+  background: #4a1a1a;
 }
 
 .song-card__info {

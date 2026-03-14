@@ -33,7 +33,7 @@ export class SongCard {
     container.innerHTML = `
       <div class="song-card">
         <div class="song-card__main">
-          <img class="song-card__cover" src="" alt="Cover" />
+          <img class="song-card__cover" alt="" />
           <div class="song-card__info">
             <div class="song-card__title"></div>
             <div class="song-card__subtitle"></div>
@@ -92,12 +92,11 @@ export class SongCard {
   update(state: GameState, showMisses: boolean): void {
     if (state.coverUrl) {
       this.coverEl.src = state.coverUrl;
-      this.coverEl.style.display = "";
       this.coverEl.onerror = () => {
-        this.coverEl.style.display = "none";
+        this.coverEl.removeAttribute("src");
       };
     } else {
-      this.coverEl.style.display = "none";
+      this.coverEl.removeAttribute("src");
     }
     this.titleEl.textContent = state.songName;
     this.subtitleEl.textContent = state.songSubName;
