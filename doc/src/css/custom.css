@@ -241,7 +241,6 @@ article.theme-doc-markdown {
   order: -1;
 }
 
-.markdown > div,
 .markdown > * {
   order: 0;
 }

@@ -102,12 +102,12 @@ const DEFAULT_STATE: GameState = {
 
 The `parseDifficulty` utility normalizes raw difficulty strings from the various adapter protocols into a standard `Difficulty` value.
 
-- Handles case-insensitive matching
+- Uses exact-case lookup (`"Easy"`, `"Normal"`, `"Hard"`, `"Expert"`, `"ExpertPlus"`)
 - Falls back to `"Expert"` for `null`, `undefined`, or unrecognized values
 
 ```typescript
-parseDifficulty("expertplus");  // "ExpertPlus"
-parseDifficulty("HARD");        // "Hard"
+parseDifficulty("ExpertPlus");  // "ExpertPlus"
+parseDifficulty("Hard");        // "Hard"
 parseDifficulty(null);          // "Expert"
 parseDifficulty("unknown");     // "Expert"
 ```

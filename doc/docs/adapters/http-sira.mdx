@@ -102,8 +102,10 @@ const missCount = passedNotes - hitNotes;
 The `batteryEnergy` field uses decimal 0-1 scale and can be `null` (when not in battery mode):
 
 ```typescript
-const health = batteryEnergy != null ? batteryEnergy * 100 : 50;
+const health = batteryEnergy != null ? batteryEnergy * 100 : previousHealth;
 ```
+
+The fallback uses the previous health value (not a fixed default), preserving continuity when battery mode is not active.
 
 ## Song Hash
 

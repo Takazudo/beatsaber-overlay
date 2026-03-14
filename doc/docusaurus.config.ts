@@ -14,11 +14,11 @@ const config: Config = {
   url: 'http://mydoc.localhost:8811',
   baseUrl: '/',
 
-  onBrokenLinks: 'ignore',
+  onBrokenLinks: 'warn',
 
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: 'ignore',
+      onBrokenMarkdownLinks: 'warn',
     },
   },
 

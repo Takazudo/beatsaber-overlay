@@ -88,7 +88,7 @@ When the state transitions to `"Menu"`, the overlay resets the entire state to `
 ```json
 {
   "_event": "gameState",
-  "gameStateChanged": "Playing"
+  "gameState": "Playing"
 }
 ```
 
@@ -99,7 +99,7 @@ Sent when the player pauses. Contains the pause time in milliseconds.
 ```json
 {
   "_event": "pause",
-  "pauseTime": 45200
+  "pause": 45200
 }
 ```
 
@@ -110,7 +110,7 @@ Sent when the player resumes from pause. Contains the resume time in millisecond
 ```json
 {
   "_event": "resume",
-  "resumeTime": 48500
+  "resume": 48500
 }
 ```
 
