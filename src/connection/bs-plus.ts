@@ -4,13 +4,12 @@ import { DEFAULT_STATE, parseDifficulty } from "./shared";
 
 interface BSPlusMapInfo {
   level_id: string;
-  song_name: string;
-  song_sub_name: string;
-  song_author: string;
+  name: string;
+  sub_name: string;
+  artist: string;
   mapper: string;
   BSRKey: string;
   coverRaw: string;
-  songHash: string;
   duration: number;
   BPM: number;
   difficulty: string;
@@ -33,11 +32,11 @@ interface BSPlusMessage {
   _event: string;
   protocolVersion?: number;
   gameVersion?: string;
-  mapInfoChanged?: BSPlusMapInfo;
-  scoreEvent?: BSPlusScoreEvent;
-  gameStateChanged?: string;
-  pauseTime?: number;
-  resumeTime?: number;
+  mapInfo?: BSPlusMapInfo;
+  score?: BSPlusScoreEvent;
+  gameState?: string;
+  pause?: number;
+  resume?: number;
 }
 
 export class BSPlusAdapter {
@@ -89,16 +88,20 @@ export class BSPlusAdapter {
       return;
     }
 
-    if (msg._event === "mapInfoChanged" && msg.mapInfoChanged) {
-      const info = msg.mapInfoChanged;
+    if (msg._event === "mapInfo" && msg.mapInfo) {
+      const info = msg.mapInfo;
+      // Derive songHash from level_id by stripping "custom_level_" prefix
+      const songHash = info.level_id
+        ? info.level_id.replace(/^custom_level_/i, "")
+        : "";
       this.state = {
         ...this.state,
-        songName: info.song_name,
-        songSubName: info.song_sub_name,
-        songAuthor: info.song_author,
+        songName: info.name,
+        songSubName: info.sub_name,
+        songAuthor: info.artist,
         mapper: info.mapper,
         bsr: info.BSRKey,
-        songHash: info.songHash ?? "",
+        songHash,
         coverUrl: info.coverRaw
           ? `data:image/png;base64,${info.coverRaw}`
           : "",
@@ -111,8 +114,8 @@ export class BSPlusAdapter {
       this.callback({ ...this.state });
     }
 
-    if (msg._event === "scoreEvent" && msg.scoreEvent) {
-      const score = msg.scoreEvent;
+    if (msg._event === "score" && msg.score) {
+      const score = msg.score;
       this.state = {
         ...this.state,
         currentTime: score.time / 1000,
@@ -125,7 +128,7 @@ export class BSPlusAdapter {
       this.callback({ ...this.state });
     }
 
-    if (msg._event === "gameStateChanged" && msg.gameStateChanged) {
+    if (msg._event === "gameState" && msg.gameState) {
       const stateMap: Record<string, GameState["playState"]> = {
         Menu: "menu",
         Playing: "playing",
@@ -134,7 +137,7 @@ export class BSPlusAdapter {
       };
       this.state = {
         ...this.state,
-        playState: stateMap[msg.gameStateChanged] ?? "menu",
+        playState: stateMap[msg.gameState] ?? "menu",
       };
       if (this.state.playState === "menu") {
         this.state = { ...DEFAULT_STATE };
@@ -142,20 +145,20 @@ export class BSPlusAdapter {
       this.callback({ ...this.state });
     }
 
-    if (msg._event === "pauseTime" && msg.pauseTime !== undefined) {
+    if (msg._event === "pause" && msg.pause !== undefined) {
       this.state = {
         ...this.state,
         playState: "paused",
-        currentTime: msg.pauseTime / 1000,
+        currentTime: msg.pause / 1000,
       };
       this.callback({ ...this.state });
     }
 
-    if (msg._event === "resumeTime" && msg.resumeTime !== undefined) {
+    if (msg._event === "resume" && msg.resume !== undefined) {
       this.state = {
         ...this.state,
         playState: "playing",
-        currentTime: msg.resumeTime / 1000,
+        currentTime: msg.resume / 1000,
       };
       this.callback({ ...this.state });
     }

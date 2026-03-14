@@ -90,12 +90,15 @@ export class SongCard {
   }
 
   update(state: GameState, showMisses: boolean): void {
-    if (state.coverUrl) {
+    // Only update cover src when the URL actually changes to avoid
+    // re-triggering image loads on every frame (~10Hz)
+    const currentSrc = this.coverEl.getAttribute("src") ?? "";
+    if (state.coverUrl && state.coverUrl !== currentSrc) {
       this.coverEl.src = state.coverUrl;
       this.coverEl.onerror = () => {
         this.coverEl.removeAttribute("src");
       };
-    } else {
+    } else if (!state.coverUrl && currentSrc) {
       this.coverEl.removeAttribute("src");
     }
     this.titleEl.textContent = state.songName;

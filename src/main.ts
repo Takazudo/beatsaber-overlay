@@ -39,8 +39,18 @@ function main() {
 
   // 4. State update handler
   let lastSongHash = "";
+  let beatSaverCoverUrl = "";
+  let beatSaverBsr = "";
 
   function onGameStateUpdate(state: GameState) {
+    // Apply persisted BeatSaver data to every state update
+    if (beatSaverCoverUrl && state.songHash === lastSongHash) {
+      state.coverUrl = beatSaverCoverUrl;
+    }
+    if (beatSaverBsr && !state.bsr && state.songHash === lastSongHash) {
+      state.bsr = beatSaverBsr;
+    }
+
     songCard.update(state, params.md);
 
     if (state.playState === "playing" || state.playState === "paused") {
@@ -57,15 +67,16 @@ function main() {
     // Fetch cover + BSR from BeatSaver when a new song starts
     if (state.songHash && state.songHash !== lastSongHash) {
       lastSongHash = state.songHash;
+      beatSaverCoverUrl = "";
+      beatSaverBsr = "";
       fetchMapByHash(state.songHash).then((mapInfo) => {
         if (mapInfo) {
           if (mapInfo.coverUrl) {
-            state.coverUrl = mapInfo.coverUrl;
+            beatSaverCoverUrl = mapInfo.coverUrl;
           }
-          if (mapInfo.bsr && !state.bsr) {
-            state.bsr = mapInfo.bsr;
+          if (mapInfo.bsr) {
+            beatSaverBsr = mapInfo.bsr;
           }
-          songCard.update(state, params.md);
         }
       });
     }
