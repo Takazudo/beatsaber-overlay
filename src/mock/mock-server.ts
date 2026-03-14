@@ -1,5 +1,10 @@
 import type { GameState, GameStateCallback, Difficulty } from "../types";
 
+function makeCoverSvg(bg: string, text: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="${bg}"/><text x="128" y="138" text-anchor="middle" font-family="sans-serif" font-size="28" font-weight="bold" fill="#fff">${text}</text></svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
 interface MockSong {
   songName: string;
   songSubName: string;
@@ -23,7 +28,7 @@ const MOCK_SONGS: MockSong[] = [
     difficulty: "ExpertPlus",
     bpm: 225,
     duration: 285,
-    coverUrl: "",
+    coverUrl: makeCoverSvg("#b52a1c", "RCTTS"),
     bsr: "25f",
     ranked: true,
     pp: 450,
@@ -36,7 +41,7 @@ const MOCK_SONGS: MockSong[] = [
     difficulty: "Expert",
     bpm: 174,
     duration: 230,
-    coverUrl: "",
+    coverUrl: makeCoverSvg("#1268a1", "CRYST"),
     bsr: "1a2b",
     ranked: true,
     pp: 320,
@@ -49,7 +54,7 @@ const MOCK_SONGS: MockSong[] = [
     difficulty: "ExpertPlus",
     bpm: 174,
     duration: 210,
-    coverUrl: "",
+    coverUrl: makeCoverSvg("#454088", "OVERKILL"),
     bsr: "2a4c",
     ranked: false,
     pp: 0,
