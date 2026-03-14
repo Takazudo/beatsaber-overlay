@@ -7,5 +7,5 @@ __inbox/
 
 # Doc site
 doc/node_modules/
-doc/build/
-doc/.docusaurus/
+doc/dist/
+doc/.astro/

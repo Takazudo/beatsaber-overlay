@@ -1,7 +1,10 @@
 {
-  "extends": "@docusaurus/tsconfig",
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "exclude": [".docusaurus", "build"]
+  "exclude": ["dist", "e2e/fixtures", "worktrees"]
 }
