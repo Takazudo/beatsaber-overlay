@@ -15,7 +15,7 @@
 
   /* Colors */
   --color-text: #ffffff;
-  --color-bg: rgba(0, 0, 0, 0.6);
+  --color-bg: transparent;
   --color-accent: #4a90d9;
 
   /* Difficulty Colors */

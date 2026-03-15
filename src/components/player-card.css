@@ -1,5 +1,5 @@
 :root {
-  --pc-bg: var(--overlay-bg, rgba(0, 0, 0, 0.75));
+  --pc-bg: var(--overlay-bg, transparent);
   --pc-fg: var(--overlay-fg, #ffffff);
   --pc-fg-secondary: var(--overlay-fg, rgba(255, 255, 255, 0.7));
   --pc-radius: var(--overlay-radius, 12px);
@@ -11,7 +11,6 @@
 
 .player-card {
   background: var(--pc-bg);
-  backdrop-filter: blur(12px);
   border-radius: var(--pc-radius);
   padding: var(--pc-padding);
   color: var(--pc-fg);
@@ -40,7 +39,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  background: #000;
+  background: transparent;
 }
 
 .player-card__info {
