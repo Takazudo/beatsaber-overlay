@@ -56,6 +56,11 @@ body {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+  cursor: none;
+}
+
+body.cursor-visible {
+  cursor: default;
 }
 
 #overlay {

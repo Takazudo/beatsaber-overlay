@@ -9,7 +9,27 @@ import { PlayerCard } from "./components/player-card";
 import { fetchPlayerInfo } from "./api/scoresaber";
 import { fetchMapByHash } from "./api/beatsaver";
 
+function setupCursorAutoHide() {
+  let timer: ReturnType<typeof setTimeout>;
+  const body = document.body;
+
+  function hideCursor() {
+    body.classList.remove("cursor-visible");
+  }
+
+  function showCursor() {
+    body.classList.add("cursor-visible");
+    clearTimeout(timer);
+    timer = setTimeout(hideCursor, 3000);
+  }
+
+  document.addEventListener("mousemove", showCursor);
+}
+
 function main() {
+  // 0. Auto-hide cursor after 3s of inactivity
+  setupCursorAutoHide();
+
   // 1. Parse URL params
   const params = parseParams();
 
