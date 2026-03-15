@@ -94,12 +94,18 @@ export class SongCard {
     // re-triggering image loads on every frame (~10Hz)
     const currentSrc = this.coverEl.getAttribute("src") ?? "";
     if (state.coverUrl && state.coverUrl !== currentSrc) {
+      this.coverEl.classList.remove("loaded");
       this.coverEl.src = state.coverUrl;
+      this.coverEl.onload = () => {
+        this.coverEl.classList.add("loaded");
+      };
       this.coverEl.onerror = () => {
         this.coverEl.removeAttribute("src");
+        this.coverEl.classList.remove("loaded");
       };
     } else if (!state.coverUrl && currentSrc) {
       this.coverEl.removeAttribute("src");
+      this.coverEl.classList.remove("loaded");
     }
     this.titleEl.textContent = state.songName;
     this.subtitleEl.textContent = state.songSubName;

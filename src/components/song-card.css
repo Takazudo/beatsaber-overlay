@@ -45,6 +45,12 @@
   object-fit: cover;
   flex-shrink: 0;
   background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.song-card__cover.loaded {
+  opacity: 1;
 }
 
 .song-card__info {

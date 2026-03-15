@@ -56,12 +56,10 @@ function main() {
     if (state.playState === "playing" || state.playState === "paused") {
       songCard.show();
       playerCard.hide();
-    } else if (state.playState === "menu") {
+    } else {
+      // menu or finished → hide song card, show player card
       songCard.hide();
       playerCard.show();
-    } else if (state.playState === "finished") {
-      songCard.show();
-      playerCard.hide();
     }
 
     // Fetch cover + BSR from BeatSaver when a new song starts
