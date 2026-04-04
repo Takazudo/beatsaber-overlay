@@ -2,6 +2,7 @@ import type { GameStateCallback } from "../types";
 import { BSPlusAdapter } from "./bs-plus";
 import { DataPullerAdapter } from "./data-puller";
 import { HTTPSiraAdapter } from "./http-sira";
+import { DEFAULT_STATE } from "./shared";
 
 type Adapter = BSPlusAdapter | HTTPSiraAdapter | DataPullerAdapter;
 
@@ -46,6 +47,11 @@ export class ConnectionManager {
 
   private tryNextAdapter(): void {
     if (this.stopped) return;
+
+    // Reset UI when disconnecting from a previously connected adapter
+    if (this.connected) {
+      this.callback({ ...DEFAULT_STATE });
+    }
 
     this.currentAdapter?.disconnect();
     this.connected = false;
@@ -99,6 +105,9 @@ export class ConnectionManager {
   private scheduleReconnect(): void {
     if (this.stopped) return;
     this.clearReconnectTimer();
+
+    // Reset UI when all adapters have failed
+    this.callback({ ...DEFAULT_STATE });
 
     const delay = Math.min(
       RECONNECT_BASE_MS * Math.pow(2, this.reconnectAttempts),
