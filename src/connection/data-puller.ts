@@ -120,7 +120,11 @@ export class DataPullerAdapter {
       this.state.coverUrl = data.coverImage.startsWith("data:")
         ? data.coverImage
         : `data:image/png;base64,${data.coverImage}`;
+    } else if ("coverImage" in data) {
+      this.state.coverUrl = "";
     }
+
+    const prevPlayState = this.state.playState;
 
     if (data.LevelPaused) {
       this.state.playState = "paused";
@@ -132,6 +136,12 @@ export class DataPullerAdapter {
       this.state.playState = "playing";
     } else {
       this.state.playState = "menu";
+    }
+
+    // Reset all state only when transitioning to menu from gameplay
+    // (not on every menu update, which would erase song metadata during browsing)
+    if (this.state.playState === "menu" && prevPlayState !== "menu") {
+      this.state = { ...DEFAULT_STATE };
     }
 
     this.callback({ ...this.state });
