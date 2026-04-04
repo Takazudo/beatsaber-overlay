@@ -120,6 +120,8 @@ export class DataPullerAdapter {
       this.state.coverUrl = data.coverImage.startsWith("data:")
         ? data.coverImage
         : `data:image/png;base64,${data.coverImage}`;
+    } else {
+      this.state.coverUrl = "";
     }
 
     if (data.LevelPaused) {
