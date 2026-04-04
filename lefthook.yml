@@ -3,8 +3,10 @@ pre-commit:
     format-md:
       glob: "**/*.{md,mdx}"
       staged_files: true
+      stage_fixed: true
       run: pnpm exec mdx-formatter --write {staged_files}
     format-code:
       glob: "**/*.{ts,css,html}"
       staged_files: true
+      stage_fixed: true
       run: pnpm exec prettier --write {staged_files}

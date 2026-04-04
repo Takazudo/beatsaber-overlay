@@ -85,7 +85,6 @@ export class ConnectionManager {
 
     socket.addEventListener("close", () => {
       if (this.stopped) return;
-      this.connected = false;
       this.adapterIndex++;
       this.tryNextAdapter();
     });
