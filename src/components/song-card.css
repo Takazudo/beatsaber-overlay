@@ -44,11 +44,18 @@
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  background: transparent;
+  background: #000;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
+/* Show black box when no cover available */
+.song-card__cover:not([src]),
+.song-card__cover[src=""] {
+  opacity: 1;
+}
+
+/* Show image when loaded */
 .song-card__cover.loaded {
   opacity: 1;
 }
