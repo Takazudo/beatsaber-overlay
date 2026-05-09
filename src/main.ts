@@ -73,11 +73,18 @@ function main() {
 
     songCard.update(state, params.md);
 
-    if (state.playState === "playing" || state.playState === "paused") {
+    // Visibility is driven by whether a song is loaded, not by playState.
+    // Plugin protocols are inconsistent about emitting an explicit "Playing"
+    // transition (BSPlus in particular often signals start only via mapInfo
+    // + a stream of score events), so we'd miss the gameplay window if we
+    // gated on playState alone. songName is cleared by the adapters when
+    // they reset to DEFAULT_STATE on returning to menu, so it's a reliable
+    // proxy for "we're in (or just finished) a song".
+    const inSong = !!state.songName && state.playState !== "finished";
+    if (inSong) {
       songCard.show();
       playerCard.hide();
     } else {
-      // menu or finished → hide song card, show player card
       songCard.hide();
       playerCard.show();
     }

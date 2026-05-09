@@ -139,14 +139,17 @@ export class BSPlusAdapter {
         Paused: "paused",
         Finished: "finished",
       };
-      this.state = {
-        ...this.state,
-        playState: stateMap[msg.gameState] ?? "menu",
-      };
-      if (this.state.playState === "menu") {
-        this.state = { ...DEFAULT_STATE };
+      const newPlayState = stateMap[msg.gameState];
+      // Ignore unknown gameState values rather than silently snapping back
+      // to "menu" — different BSPlus protocol versions emit values we may
+      // not recognize, and a spurious reset wipes the song info entirely.
+      if (newPlayState) {
+        this.state = { ...this.state, playState: newPlayState };
+        if (newPlayState === "menu") {
+          this.state = { ...DEFAULT_STATE };
+        }
+        this.callback({ ...this.state });
       }
-      this.callback({ ...this.state });
     }
 
     if (msg._event === "pause" && msg.pause !== undefined) {
