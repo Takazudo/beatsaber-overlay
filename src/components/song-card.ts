@@ -5,6 +5,7 @@ import "./song-card.css";
 
 export class SongCard {
   private el: HTMLElement;
+  private lastSongKey = "";
 
   private coverEl: HTMLImageElement;
   private titleEl: HTMLElement;
@@ -90,12 +91,28 @@ export class SongCard {
   }
 
   update(state: GameState, showMisses: boolean): void {
+    // Track song identity so we can drop a stale cover when switching to a
+    // song that has no cover of its own. Beat Saber built-in songs often
+    // arrive without a fresh coverImage payload, so the adapter ends up
+    // re-emitting the previous song's cover URL — without this the old
+    // artwork would linger on screen during built-in song playback.
+    const songKey = `${state.songHash}|${state.songName}`;
+    const songChanged = songKey !== this.lastSongKey;
+    this.lastSongKey = songKey;
+
     // Only update cover src when the URL actually changes to avoid
     // re-triggering image loads on every frame (~10Hz)
     const currentSrc = this.coverEl.getAttribute("src") ?? "";
-    if (state.coverUrl && state.coverUrl !== currentSrc) {
+    let coverUrl = state.coverUrl;
+    if (songChanged && coverUrl && coverUrl === currentSrc) {
+      // Same URL as the previous song = adapter never refreshed it for the
+      // new song. Drop it so the black-box fallback shows.
+      coverUrl = "";
+    }
+
+    if (coverUrl && coverUrl !== currentSrc) {
       this.coverEl.classList.remove("loaded");
-      this.coverEl.src = state.coverUrl;
+      this.coverEl.src = coverUrl;
       this.coverEl.onload = () => {
         this.coverEl.classList.add("loaded");
       };
@@ -103,7 +120,7 @@ export class SongCard {
         this.coverEl.removeAttribute("src");
         this.coverEl.classList.remove("loaded");
       };
-    } else if (!state.coverUrl && currentSrc) {
+    } else if (!coverUrl && currentSrc) {
       this.coverEl.removeAttribute("src");
       this.coverEl.classList.remove("loaded");
     }
