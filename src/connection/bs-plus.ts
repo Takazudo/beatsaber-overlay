@@ -123,6 +123,12 @@ export class BSPlusAdapter {
         missCount: score.missCount,
         health: score.currentHealth * 100,
       };
+      // BSPlus does not always send an explicit "Playing" gameState event when
+      // a song starts — score events flow during gameplay only, so treat them
+      // as a signal that we are now playing if no other transition has set it.
+      if (this.state.playState === "menu") {
+        this.state.playState = "playing";
+      }
       this.callback({ ...this.state });
     }
 

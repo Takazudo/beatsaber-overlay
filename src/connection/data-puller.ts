@@ -156,6 +156,12 @@ export class DataPullerAdapter {
     this.state.health = data.PlayerHealth ?? this.state.health;
     this.state.currentTime = data.TimeElapsed ?? this.state.currentTime;
 
+    // LiveData only flows during gameplay, so if we never saw a MapData
+    // transition (e.g. mid-song reconnect), treat it as "playing".
+    if (this.state.playState === "menu") {
+      this.state.playState = "playing";
+    }
+
     this.callback({ ...this.state });
   }
 

@@ -114,6 +114,11 @@ export class HTTPSiraAdapter {
 
     if (event === "scoreChanged") {
       this.updatePerformance(status.performance);
+      // Recover from a missed songStart (e.g. mid-song reconnect) — gameplay
+      // events imply we are playing.
+      if (this.state.playState === "menu") {
+        this.state.playState = "playing";
+      }
       this.callback({ ...this.state });
       return;
     }
@@ -123,6 +128,9 @@ export class HTTPSiraAdapter {
       this.state.missCount =
         (status.performance?.passedNotes ?? 0) -
         (status.performance?.hitNotes ?? 0);
+      if (this.state.playState === "menu") {
+        this.state.playState = "playing";
+      }
       this.callback({ ...this.state });
       return;
     }
