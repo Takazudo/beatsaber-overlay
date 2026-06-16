@@ -3,6 +3,7 @@
   --sc-fg: var(--overlay-fg, #ffffff);
   --sc-fg-secondary: var(--overlay-fg, rgba(255, 255, 255, 0.7));
   --sc-radius: var(--overlay-radius, 12px);
+  --sc-width: 360px;
   --sc-padding: 16px;
   --sc-cover-size: 80px;
   --sc-gap: 12px;
@@ -17,8 +18,7 @@
   color: var(--sc-fg);
   font-family: var(--font-family, "Outfit", sans-serif);
   font-weight: var(--font-weight, 300);
-  min-width: 320px;
-  max-width: 400px;
+  width: var(--sc-width);
   overflow: hidden;
   opacity: var(--overlay-opacity, 0);
   transform: translateY(10px);
